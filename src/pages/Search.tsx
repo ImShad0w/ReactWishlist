@@ -33,14 +33,14 @@ function Search() {
 
   function HandleRender() {
     if (loading) {
-      return <p>Loading...</p>
+      return <p className="text-gray-400 mt-20 text-2xl">Loading...</p>
     }
 
     if (results.length === 0) {
-      return <p>No animes found!</p>
+      return <p className="text-gray-400 mt-20 text-3xl">No animes found!</p>
     }
     return (
-      <div className="grid grid-cols-5 gap-5 p-5 mt-20">
+      <div className="grid grid-cols-5 gap-5 mt-20 w-10/12">
         {results.map(anime => {
           return (
             <AnimeCard key={anime.mal_id} anime={anime} onSeeMore={() => setCurrAnime(anime)}>
@@ -57,10 +57,10 @@ function Search() {
       {currentAnime ? (
         <AnimeFull anime={currentAnime} onBack={() => setCurrAnime(null)} />
       ) : (
-        <div>
-          <div>
-            <input type="text" value={query} onInput={handleInput} />
-            <button onClick={() => queryAnime(query)}>Search</button>
+        <div className="flex flex-col items-center">
+          <div className="bg-gray-300 w-10/12 mt-20 h-20 p-5 rounded-xl grid grid-cols-[90%_10%]">
+            <input className="text-2xl" type="text" value={query} onInput={handleInput} placeholder="Example: Gachiakuta" />
+            <button className="bg-white rounded-lg" onClick={() => queryAnime(query)}>Search</button>
           </div>
           <HandleRender />
         </div>
