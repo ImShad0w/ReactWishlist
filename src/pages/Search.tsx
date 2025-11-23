@@ -2,6 +2,7 @@ import { useState } from "react";
 import { JikanClient, type Anime } from "@tutkli/jikan-ts";
 import AnimeCard from "../components/AnimeCard";
 import AnimeFull from "../components/AnimeFull";
+import { useAnimeStore } from "../stores/animeStore";
 
 function Search() {
 
@@ -9,6 +10,10 @@ function Search() {
   const [results, setResults] = useState<Anime[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentAnime, setCurrAnime] = useState<Anime | null>();
+  const addToWishlist = useAnimeStore(state => state.addToWishlist);
+  const removeFromWishlist = useAnimeStore(state => state.removeFromWishlist);
+  const isInWishlist = useAnimeStore(state => state.isInWishlist);
+  const wishlist = useAnimeStore(state => state.wishlist);
 
   function handleInput(e: any) {
     setQuery(e.target.value)
@@ -44,7 +49,7 @@ function Search() {
         {results.map(anime => {
           return (
             <AnimeCard key={anime.mal_id} anime={anime} onSeeMore={() => setCurrAnime(anime)}>
-              <button className="bg-purple-300 p-2 rounded-lg w-full">Add</button>
+              {isInWishlist(anime.mal_id) ? <button className="bg-red-400 p-4 rounded-lg" onClick={() => removeFromWishlist(anime.mal_id)}>Remove</button> : <button className="bg-purple-400 p-4 rounded-lg" onClick={() => addToWishlist(anime)}>Add</button>}
             </AnimeCard>
           )
         })}

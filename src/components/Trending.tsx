@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 import { type Anime, TopClient } from "@tutkli/jikan-ts";
 import AnimeCard from "./AnimeCard";
 import AnimeFull from "./AnimeFull";
+import { useAnimeStore } from "../stores/animeStore";
 
 export default function Trending() {
 
   const [trending, setTrending] = useState<Anime[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currAnime, setCurrAnime] = useState<Anime | null>(null);
+  const addToWishlist = useAnimeStore(state => state.addToWishlist);
+  const removeFromWishlist = useAnimeStore(state => state.removeFromWishlist);
+  const isInWishlist = useAnimeStore(state => state.isInWishlist);
+  const wishlist = useAnimeStore(state => state.wishlist);
 
   function HandleRender() {
     if (loading) {
@@ -21,13 +26,18 @@ export default function Trending() {
       <div className="grid grid-cols-4 gap-5 mt-20 w-10/12">
         {trending.map(anime => {
           return (
-            <AnimeCard key={anime.mal_id} anime={anime} onSeeMore={() => setCurrAnime(anime)}>
-              <button className="bg-purple-300 p-2 rounded-lg w-full">Add</button>
+            <AnimeCard key={anime.mal_id} anime={anime} onSeeMore={() => handleCurrAnime(anime)}>
+              {isInWishlist(anime.mal_id) ? <button className="bg-red-400 p-4 rounded-lg" onClick={() => removeFromWishlist(anime.mal_id)}>Remove</button> : <button className="bg-purple-400 p-4 rounded-lg" onClick={() => addToWishlist(anime)}>Add</button>}
             </AnimeCard>
           )
         })}
       </div>
     );
+  }
+
+  function handleCurrAnime(anime: Anime) {
+    setCurrAnime(null);
+    setCurrAnime(anime);
   }
 
   //Only makes 1 API call and renders once
